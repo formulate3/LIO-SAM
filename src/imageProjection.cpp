@@ -235,14 +235,24 @@ public:
         // get timestamp
         cloudHeader = currentCloudMsg.header;
         timeScanCur = cloudHeader.stamp.toSec();
-        timeScanEnd = timeScanCur + laserCloudIn->points.back().time;
+        //0120:fix the bug of point cloud in not in dense format
+        // timeScanEnd = timeScanCur + laserCloudIn->points.back().time;
 
-        // check dense flag
+        // // check dense flag
+        // if (laserCloudIn->is_dense == false)
+        // {
+        //     ROS_ERROR("Point cloud is not in dense format, please remove NaN points first!");
+        //     ros::shutdown();
+        // }
+
+        // check dense flag and remove NaN points if needed
         if (laserCloudIn->is_dense == false)
         {
-            ROS_ERROR("Point cloud is not in dense format, please remove NaN points first!");
-            ros::shutdown();
+            ROS_WARN_ONCE("Point cloud is not in dense format, removing NaN points automatically...");
+            std::vector<int> indices;
+            pcl::removeNaNFromPointCloud(*laserCloudIn, *laserCloudIn, indices);
         }
+        timeScanEnd = timeScanCur + laserCloudIn->points.back().time;
 
         // check ring channel
         static int ringFlag = 0;
