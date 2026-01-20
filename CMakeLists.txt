@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(lio_sam)
 
 set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_CXX_FLAGS "-std=c++11")
+# set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_FLAGS "-std=c++17")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g -pthread")
 
 find_package(catkin REQUIRED COMPONENTS
@@ -24,8 +25,11 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(OpenMP REQUIRED)
 find_package(PCL REQUIRED QUIET)
 find_package(OpenCV REQUIRED QUIET)
-find_package(GTSAM REQUIRED QUIET)
-find_package(Boost REQUIRED COMPONENTS timer)
+# find_package(GTSAM REQUIRED QUIET)
+set(GTSAM_DIR /home/tkw/seu_clean_robot/seu_clean_robot_env/gtsam-4.0.3-install/lib/cmake/GTSAM)
+find_package(GTSAM REQUIRED)
+# find_package(Boost REQUIRED COMPONENTS timer)
+find_package(Boost REQUIRED COMPONENTS timer thread serialization chrono)
 
 add_message_files(
   DIRECTORY msg
