@@ -426,6 +426,43 @@ public:
             publishGlobalMap();
         }
 
+        if(savePose){
+            // 以tum txt格式保存轨迹
+            cout << "****************************************************" << endl;
+            cout << "Saving trajectory files of tum format...";
+            // 1.create directory and remove old files, 删除文件夹再重建!!!
+            // savePoseDirectory = std::getenv("HOME") + savePoseDirectory;
+            // system((std::string("exec rm -r ") + savePoseDirectory).c_str());
+            // system((std::string("mkdir ") + savePoseDirectory).c_str());    
+            FILE *fp;
+            string pos_log_dir = savePoseDirectory;
+            fp = fopen(pos_log_dir.c_str(),"w");
+            // fstream liosam_file;
+            // liosam_file.open(savePoseDirectory, ios::out);
+            // liosam_file.precision(10);
+            // foutC.open(savePoseDirectory + "lidar_trajectory.txt");
+            for (int i = 0; i < cloudKeyPoses6D->size(); ++i)
+            {
+                tf::Quaternion q = tf::createQuaternionFromRPY(
+                    cloudKeyPoses6D->points[i].roll, 
+                    cloudKeyPoses6D->points[i].pitch, 
+                    cloudKeyPoses6D->points[i].yaw);
+                // liosam_file << fixed
+                // << ros::Time().fromSec(cloudKeyPoses6D->points[i].time) << " " 
+                // << cloudKeyPoses6D->points[i].x <<" " 
+                // << cloudKeyPoses6D->points[i].y << " " 
+                // << cloudKeyPoses6D->points[i].z << " " 
+                // << q.x() << " " << q.y() << " " << q.z() << " " << q.w() << std::endl;
+                // double time = ros::Time().fromSec(cloudKeyPoses6D->points[i].time);
+                // std::cout << "time: " << cloudKeyPoses6D->points[i].time << std::endl;
+                fprintf( fp, "%lf ", cloudKeyPoses6D->points[i].time); // Time   [0]
+                fprintf( fp, "%lf %lf %lf ", cloudKeyPoses6D->points[i].x, cloudKeyPoses6D->points[i].y, cloudKeyPoses6D->points[i].z );          // Pos    [4-6]
+                fprintf( fp, "%lf %lf %lf %lf", q.x(), q.y() , q.z(), q.w()); // omega  [7-9]
+                fprintf( fp, "\n" );
+                fflush( fp );
+            }
+        }
+
         if (savePCD == false)
             return;
 

@@ -91,6 +91,10 @@ public:
     bool savePCD;
     string savePCDDirectory;
 
+    //save Pose
+    bool savePose;
+    string savePoseDirectory;
+
     // Lidar Sensor Configuration
     SensorType sensor;
     int N_SCAN;
@@ -173,6 +177,9 @@ public:
 
         nh.param<bool>("lio_sam/savePCD", savePCD, false);
         nh.param<std::string>("lio_sam/savePCDDirectory", savePCDDirectory, "/Downloads/LOAM/");
+
+        nh.param<bool>("lio_sam/savePose", savePose, false);
+        nh.param<std::string>("lio_sam/savePoseDirectory", savePoseDirectory, "/home/tkw/AAA_baseline/LIOSAM/src/LIO-SAM/path/lio_sam.txt");
 
         std::string sensorStr;
         nh.param<std::string>("lio_sam/sensor", sensorStr, "");
