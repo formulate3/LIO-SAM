@@ -156,6 +156,9 @@ public:
     float globalMapVisualizationPoseDensity;
     float globalMapVisualizationLeafSize;
 
+    // Performance monitoring
+    bool printPerformanceTimer;
+
     ParamServer()
     {
         nh.param<std::string>("/robot_id", robot_id, "roboat");
@@ -253,6 +256,7 @@ public:
         nh.param<float>("lio_sam/globalMapVisualizationSearchRadius", globalMapVisualizationSearchRadius, 1e3);
         nh.param<float>("lio_sam/globalMapVisualizationPoseDensity", globalMapVisualizationPoseDensity, 10.0);
         nh.param<float>("lio_sam/globalMapVisualizationLeafSize", globalMapVisualizationLeafSize, 1.0);
+        nh.param<bool>("lio_sam/printPerformanceTimer", printPerformanceTimer, true);
 
         usleep(100);
     }

@@ -153,6 +153,10 @@ public:
     Eigen::Affine3f incrementalOdometryAffineFront;
     Eigen::Affine3f incrementalOdometryAffineBack;
 
+    double processingTimeSumMs = 0.0;
+    size_t processingFrameCount = 0;
+    bool performanceReported = false;
+
 
     mapOptimization()
     {
@@ -189,6 +193,30 @@ public:
         downSizeFilterSurroundingKeyPoses.setLeafSize(surroundingKeyframeDensity, surroundingKeyframeDensity, surroundingKeyframeDensity); // for surrounding key poses of scan-to-map optimization
 
         allocateMemory();
+    }
+
+    ~mapOptimization()
+    {
+        reportAverageProcessingTime();
+    }
+
+    void reportAverageProcessingTime()
+    {
+        if (!printPerformanceTimer || performanceReported)
+            return;
+
+        performanceReported = true;
+
+        if (processingFrameCount == 0)
+        {
+            std::cout << "[MapOptimization] Average processing time: no valid frames processed." << std::endl;
+            return;
+        }
+
+        double avgMs = processingTimeSumMs / static_cast<double>(processingFrameCount);
+        std::cout << std::fixed << std::setprecision(3)
+                  << "[MapOptimization] Average processing time: " << avgMs
+                  << " ms over " << processingFrameCount << " frames" << std::endl;
     }
 
     void allocateMemory()
@@ -250,6 +278,8 @@ public:
         static double timeLastProcessing = -1;
         if (timeLaserInfoCur - timeLastProcessing >= mappingProcessInterval)
         {
+            ros::WallTime tStart = ros::WallTime::now();
+
             timeLastProcessing = timeLaserInfoCur;
 
             updateInitialGuess();
@@ -267,6 +297,13 @@ public:
             publishOdometry();
 
             publishFrames();
+
+            if (printPerformanceTimer)
+            {
+                double elapsedMs = (ros::WallTime::now() - tStart).toSec() * 1000.0;
+                processingTimeSumMs += elapsedMs;
+                ++processingFrameCount;
+            }
         }
     }
 
@@ -1808,6 +1845,8 @@ int main(int argc, char** argv)
     std::thread visualizeMapThread(&mapOptimization::visualizeGlobalMapThread, &MO);
 
     ros::spin();
+
+    MO.reportAverageProcessingTime();
 
     loopthread.join();
     visualizeMapThread.join();
