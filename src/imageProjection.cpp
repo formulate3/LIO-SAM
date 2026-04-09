@@ -15,19 +15,31 @@ POINT_CLOUD_REGISTER_POINT_STRUCT (VelodynePointXYZIRT,
 )
 
 struct OusterPointXYZIRT {
-    PCL_ADD_POINT4D;
-    float intensity;
-    uint32_t t;
-    uint16_t reflectivity;
-    uint8_t ring;
-    uint16_t noise;
-    uint32_t range;
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-} EIGEN_ALIGN16;
-POINT_CLOUD_REGISTER_POINT_STRUCT(OusterPointXYZIRT,
-    (float, x, x) (float, y, y) (float, z, z) (float, intensity, intensity)
-    (uint32_t, t, t) (uint16_t, reflectivity, reflectivity)
-    (uint8_t, ring, ring) (uint16_t, noise, noise) (uint32_t, range, range)
+//     PCL_ADD_POINT4D;
+//     float intensity;
+//     uint32_t t;
+//     uint16_t reflectivity;
+//     uint8_t ring;
+//     uint16_t noise;
+//     uint32_t range;
+//     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+// } EIGEN_ALIGN16;
+// POINT_CLOUD_REGISTER_POINT_STRUCT(OusterPointXYZIRT,
+//     (float, x, x) (float, y, y) (float, z, z) (float, intensity, intensity)
+//     (uint32_t, t, t) (uint16_t, reflectivity, reflectivity)
+//     (uint8_t, ring, ring) (uint16_t, noise, noise) (uint32_t, range, range)
+
+// //if mulran,use the below
+     PCL_ADD_POINT4D;
+     float intensity;
+     uint32_t t;
+     int ring;
+
+     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+ }EIGEN_ALIGN16;
+ POINT_CLOUD_REGISTER_POINT_STRUCT (OusterPointXYZIRT,
+     (float, x, x) (float, y, y) (float, z, z) (float, intensity, intensity)
+     (uint32_t, t, t) (int, ring, ring)
 )
 
 // Use the Velodyne point format as a common representation
